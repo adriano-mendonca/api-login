@@ -15,7 +15,7 @@ function verifyJWT(req, res, next) {
           .json({ auth: false, message: "Failed to authenticate token" });
       } else {
         req.id = decoded.id;
-        req.username = decoded.username;
+        req.email = decoded.email;
         next();
       }
     });

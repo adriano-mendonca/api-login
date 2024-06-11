@@ -6,7 +6,7 @@ const router = Router();
 router.post("/validate", verifyJWT, (req, res) => {
   const userInfo = {
     id: req.id,
-    username: req.username,
+    email: req.email,
   };
   res.json(userInfo);
 });
