@@ -70,7 +70,7 @@ const postConta = async (
   aprovador
 ) => {
   const result = await connection.query(
-    `INSERT INTO contas (centro_custo, fornecedor, valor, nf, descricao, observacao, id_aprovador, id_solicitante) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO contas (centro_custo, fornecedor, valor, nf, descricao, observacao, id_aprovador, id_solicitante) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       centro,
       fornecedor,
@@ -85,12 +85,19 @@ const postConta = async (
   return result[0];
 };
 
-const getContas = async (id) => {
+const getContas = async (id, id2) => {
   const result = await connection.query(
-    `SELECT * FROM contas WHERE id_solicitante = ?`,
-    [id]
+    `SELECT contas.id_conta, contas.centro_custo, contas.fornecedor, contas.valor, contas.nf, contas.descricao, contas.observacao, ua.name as usuario_aprovador, us.name as usuario_solicitante, status.descricao as status FROM contas LEFT JOIN usuario ua ON contas.id_aprovador = ua.id_usuario LEFT JOIN usuario us ON us.id_usuario = contas.id_solicitante LEFT JOIN status ON contas.status = status.id_status WHERE contas.id_solicitante = ? OR contas.id_aprovador = ?`,
+    [id, id2]
   );
   return result[0];
+};
+
+const alterStatus = async (status, id) => {
+  const result = await connection.query(
+    `UPDATE contas SET status = ? WHERE id_conta = ?`,
+    [status, id]
+  );
 };
 
 module.exports = {
@@ -102,4 +109,5 @@ module.exports = {
   getAprovador,
   postConta,
   getContas,
+  alterStatus,
 };
