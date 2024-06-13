@@ -17,8 +17,8 @@ const verifyUser = async (email, password) => {
       `SELECT senha, id_usuario FROM usuario WHERE email = ?`,
       [email]
     );
-    if (!rows[0]) {
-      throw new Error("Usuário inválido");
+    if (rows[0] === undefined) {
+      return { valid: false };
     }
     const isValidPassword = await bcrypt.compare(password, rows[0].senha);
     const id_usuario = rows[0].id_usuario;
@@ -98,7 +98,7 @@ const alterStatus = async (status, id) => {
     `UPDATE contas SET status = ? WHERE id_conta = ?`,
     [status, id]
   );
-  return result[0]
+  return result[0];
 };
 
 module.exports = {
