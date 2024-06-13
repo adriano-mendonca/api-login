@@ -98,6 +98,7 @@ const alterStatus = async (status, id) => {
     `UPDATE contas SET status = ? WHERE id_conta = ?`,
     [status, id]
   );
+  return result[0]
 };
 
 module.exports = {

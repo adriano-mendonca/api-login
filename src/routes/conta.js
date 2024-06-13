@@ -27,7 +27,6 @@ router.post("", verifyJWT, async (req, res) => {
       solicitante,
       aprovador
     );
-
     if (query.length === 0) {
       res.status(409).json({ message: "Não foi possível adicionar a conta!" });
     }
@@ -51,10 +50,9 @@ router.get("/lista", verifyJWT, async (req, res) => {
 
 router.post("/alterstatus", verifyJWT, async (req, res) => {
   const { status, id_conta } = req.body;
-  console.log(status, id_conta);
   try {
     const query = await querys.alterStatus(status, id_conta);
-    res.status(200).json({ message: "tudo ok!" });
+    res.status(201).json({ message: "Status alterado!" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Erro interno no servidor!" });
