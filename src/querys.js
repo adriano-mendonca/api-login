@@ -47,6 +47,13 @@ const getUser = async (id) => {
   return result[0];
 };
 
+const getCentro = async () => {
+  const { rows } = await hubsoft.query(
+    "SELECT descricao, id_centro_custo FROM centro_custo WHERE ativo"
+  );
+  return rows;
+};
+
 const getFornecedor = async () => {
   const { rows } = await hubsoft.query(
     "select id_fornecedor, nome_razaosocial  from fornecedor f where ativo order by nome_razaosocial"
@@ -63,23 +70,23 @@ const postConta = async (
   centro,
   fornecedor,
   valor,
-  nf,
   descricao,
   observacao,
   solicitante,
-  aprovador
+  aprovador,
+  path
 ) => {
   const result = await connection.query(
-    `INSERT INTO contas (centro_custo, fornecedor, valor, nf, descricao, observacao, id_aprovador, id_solicitante) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO contas (centro_custo, fornecedor, valor, descricao, observacao, id_aprovador, id_solicitante, path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       centro,
       fornecedor,
       valor,
-      nf,
       descricao,
       observacao,
       aprovador,
       solicitante,
+      path,
     ]
   );
   return result[0];
@@ -87,7 +94,7 @@ const postConta = async (
 
 const getContas = async (id, id2) => {
   const result = await connection.query(
-    `SELECT contas.id_conta, contas.centro_custo, contas.fornecedor, contas.valor, contas.nf, contas.descricao, contas.observacao, ua.name as usuario_aprovador, us.name as usuario_solicitante, status.descricao as status FROM contas LEFT JOIN usuario ua ON contas.id_aprovador = ua.id_usuario LEFT JOIN usuario us ON us.id_usuario = contas.id_solicitante LEFT JOIN status ON contas.status = status.id_status WHERE contas.id_solicitante = ? OR contas.id_aprovador = ?`,
+    `SELECT contas.id_conta, contas.centro_custo, contas.fornecedor, contas.valor, contas.descricao, contas.observacao, ua.name as usuario_aprovador, us.name as usuario_solicitante, status.descricao as status, contas.path FROM contas LEFT JOIN usuario ua ON contas.id_aprovador = ua.id_usuario LEFT JOIN usuario us ON us.id_usuario = contas.id_solicitante LEFT JOIN status ON contas.status = status.id_status WHERE contas.id_solicitante = ? OR contas.id_aprovador = ?`,
     [id, id2]
   );
   return result[0];
@@ -111,4 +118,5 @@ module.exports = {
   postConta,
   getContas,
   alterStatus,
+  getCentro,
 };

@@ -1,36 +1,37 @@
 const { Router } = require("express");
 const verifyJWT = require("../verifyJWT");
 const querys = require("../querys");
+const { storage } = require("../multerConfig");
+const multer = require("multer");
 
 const router = Router();
-
-router.post("", verifyJWT, async (req, res) => {
+const upload = multer({ storage: storage });
+router.post("", verifyJWT, upload.single("file"), async (req, res) => {
   try {
     const {
       centro,
       fornecedor,
       valor,
-      nf,
       descricao,
       observacao,
       aprovador,
       solicitante,
-    } = req.body;
-
+    } = JSON.parse(req.body.json);
+    const path = req.file.filename;
     const query = await querys.postConta(
       centro,
       fornecedor,
       valor,
-      nf,
       descricao,
       observacao,
       solicitante,
-      aprovador
+      aprovador,
+      path
     );
     if (query.length === 0) {
       res.status(409).json({ message: "Não foi possível adicionar a conta!" });
     }
-    res.status(201).json({ message: "Conta adicionado com sucesso!" });
+    res.status(201).json({ message: "Cadastro realizado com sucesso!" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Erro interno no servidor!" });

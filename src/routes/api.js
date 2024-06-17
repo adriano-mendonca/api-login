@@ -32,4 +32,14 @@ router.get("/aprovador", verifyJWT, async (req, res) => {
   }
 });
 
+router.get("/centro", verifyJWT ,async (req, res) => {
+  try {
+    const query = await querys.getCentro();
+    return res.status(200).json(query);
+  } catch (err) {
+    console.log("Error: " + err);
+    return res.status(500);
+  }
+});
+ 
 module.exports = router;
