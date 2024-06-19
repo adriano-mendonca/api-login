@@ -6,16 +6,16 @@ const verifyJWT = require("../verifyJWT");
 const router = Router();
 
 //criar usuário
-router.get("/create", verifyJWT, async (req, res) => {
+router.post("/create", verifyJWT, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, tipo } = req.body;
     const randomSalt = crypto.randomInt(10, 16);
     const passwordHash = await bcrypt.hash(password, randomSalt);
-    const query = await querys.addUser(name, email, passwordHash);
+    const query = await querys.addUser(name, email, passwordHash, tipo);
     if (query.length === 0) {
       res.status(404).json({ message: "Não foi possível criar o usuário!" });
     } else {
-      res.status(200).json(query);
+      res.status(200).json({ message: "Usuário cadastrado com sucesso!" });
     }
   } catch (error) {
     res.status(500).json({ message: "Erro interno no servidor" });

@@ -2,11 +2,19 @@ const connection = require("./connection");
 const bcrypt = require("bcrypt");
 const hubsoft = require("./connection/hubsoft");
 
-const addUser = async (name, email, password) => {
+const addUser = async (name, email, password, tipo) => {
   const query = await connection.query(
     `
-  INSERT INTO usuario (name, email, senha) VALUES (?, ?,?)`,
-    [name, email, password]
+  INSERT INTO usuario (name, email, senha, id_tipo_usuario) VALUES (?, ?, ?, ?)`,
+    [name, email, password, tipo]
+  );
+  return query;
+};
+
+const addAprover = async (id, nome) => {
+  const query = await connection.query(
+    `INSERT INTO aprovador (id, nome) VALUES (?, ?)`,
+    [id, nome]
   );
   return query;
 };
@@ -119,4 +127,5 @@ module.exports = {
   getContas,
   alterStatus,
   getCentro,
+  addAprover,
 };

@@ -6,10 +6,17 @@ const token = require("./routes/token");
 const cors = require("cors");
 const api = require("./routes/api");
 const conta = require("./routes/conta");
+// const https = require('https');
+// const fs = require('fs');
 
 require("dotenv-safe").config();
 
 const app = express();
+
+// const options = {
+//   key: fs.readFileSync('/etc/letsencrypt/live/apicontas.megalinkpiaui.com.br/privkey.pem'),
+//   cert: fs.readFileSync('/etc/letsencrypt/live/apicontas.megalinkpiaui.com.br/cert.pem'),
+// }
 
 app.use(cors());
 app.use(express.json());
@@ -27,3 +34,7 @@ app.use("/files", express.static("uploads"));
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta: ${PORT}`);
 });
+
+// https.createServer(options, app).listen(PORT, () => {
+//   console.log(`Servidor rodando em https://apicontas.megalinkpiaui:${PORT}.com.br`)
+// })
